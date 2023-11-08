@@ -5,7 +5,14 @@ fn main() {
         .unwrap()["package"]
         .clone();
 
-    let sanitize = |str: &str| str.split(" ").next().unwrap().to_string();
+    let mut identified_duplicates = std::collections::HashSet::new();
+    let mut sanitize = |str: &str| {
+        if !identified_duplicates.contains(str) && (str.split(" ").collect::<Vec<_>>().len() > 1) {
+            println!("Duplicate detected! {str}");
+            identified_duplicates.insert(str.to_string());
+        }
+        str.split(" ").next().unwrap().to_string()
+    };
 
     let mut amount_of_immediate_parents = std::collections::HashMap::<String, usize>::new();
     let mut immediate_dependencies = std::collections::HashMap::<String, Vec<String>>::new();
